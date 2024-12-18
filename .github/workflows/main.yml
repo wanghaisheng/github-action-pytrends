@@ -11,10 +11,14 @@ on:
         description: 'Region for trending searches'
         required: true
         default: 'united_states'
-      year:
-        description: 'Year for top charts'
+      start_date:
+        description: 'Start date for trend data (YYYY-MM-DD)'
         required: true
-        default: '2020'
+        default: '2020-01-01'
+      end_date:
+        description: 'End date for trend data (YYYY-MM-DD)'
+        required: true
+        default: '2021-01-01'
 
 jobs:
   run-pytrends:
@@ -22,12 +26,12 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
@@ -38,32 +42,9 @@ jobs:
         run: |
           echo "KEYWORDS=${{ github.event.inputs.keywords }}" >> $GITHUB_ENV
           echo "REGION=${{ github.event.inputs.region }}" >> $GITHUB_ENV
-          echo "YEAR=${{ github.event.inputs.year }}" >> $GITHUB_ENV
+          echo "START_DATE=${{ github.event.inputs.start_date }}" >> $GITHUB_ENV
+          echo "END_DATE=${{ github.event.inputs.end_date }}" >> $GITHUB_ENV
 
       - name: Run interest_over_time.py
         run: |
           python interest_over_time.py
-
-      - name: Run interest_by_region.py
-        run: |
-          python interest_by_region.py
-
-      - name: Run related_queries.py
-        run: |
-          python related_queries.py
-
-      - name: Run trending_searches.py
-        run: |
-          python trending_searches.py
-
-      - name: Run realtime_search_trends.py
-        run: |
-          python realtime_search_trends.py
-
-      - name: Run top_charts.py
-        run: |
-          python top_charts.py
-
-      - name: Run suggestions.py
-        run: |
-          python suggestions.py
